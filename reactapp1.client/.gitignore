@@ -1,0 +1,11 @@
+﻿.vs/
+*.user
+*.suo
+bin/
+obj/
+Debug/
+Release/
+node_modules/
+appsettings.Development.json
+secrets.json
+*.log
