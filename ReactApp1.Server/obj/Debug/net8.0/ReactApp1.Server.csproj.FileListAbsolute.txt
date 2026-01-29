@@ -108,6 +108,7 @@ C:\Users\Administrator\source\repos\ReactApp1\ReactApp1.Server\obj\Debug\net8.0\
 C:\Users\Administrator\source\repos\ReactApp1\ReactApp1.Server\obj\Debug\net8.0\ReactApp1.Server.csproj.CoreCompileInputs.cache
 C:\Users\Administrator\source\repos\ReactApp1\ReactApp1.Server\obj\Debug\net8.0\ReactApp1.Server.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Administrator\source\repos\ReactApp1\ReactApp1.Server\obj\Debug\net8.0\ReactApp1.Server.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Administrator\source\repos\ReactApp1\ReactApp1.Server\obj\Debug\net8.0\ReactApp1.Server.sourcelink.json
 C:\Users\Administrator\source\repos\ReactApp1\ReactApp1.Server\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\Users\Administrator\source\repos\ReactApp1\ReactApp1.Server\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\Administrator\source\repos\ReactApp1\ReactApp1.Server\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json

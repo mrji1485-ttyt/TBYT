@@ -24,7 +24,7 @@ namespace ReactApp1.Server.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
 
-        // 3. Constructor (Dependency Injection) - Bắt buộc phải có
+        // 3. Constructor (Dependency Injection)
         public AuthController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
@@ -36,21 +36,21 @@ namespace ReactApp1.Server.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             // --- LOGIC TRUY VẤN DATABASE ---
-            // Tìm user theo Mã HIS (Username), kèm theo thông tin Role
             var user = await _context.Users
                 .Include(u => u.UserRoles)      // Kèm bảng trung gian
                 .ThenInclude(ur => ur.Role)     // Kèm bảng Role để lấy tên quyền (Admin, TruongKhoa...)
                 .FirstOrDefaultAsync(u => u.HisCodeAcc == request.Username);
 
-            // Kiểm tra: Không tìm thấy User HOẶC Sai mật khẩu
+            // Kiểm tra:
             // Lưu ý: Dùng BCrypt để verify mật khẩu đã mã hóa
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                return Unauthorized(new { message = "Sai Mã HISCodeAcc hoặc mật khẩu!" });
+                return Unauthorized(new { message = "Sai Tên Đăng Nhập hoặc Mật Khẩu!" });
             }
 
             // Nếu đúng -> Tạo Token
             var token = GenerateJwtToken(user);
+
 
             // Trả về kết quả cho Frontend
             return Ok(new
@@ -61,7 +61,6 @@ namespace ReactApp1.Server.Controllers
                     id = user.Id,
                     fullName = user.FullName,
                     hisCode = user.HisCodeAcc,
-                    // Lấy danh sách tên các quyền để hiển thị
                     roles = user.UserRoles.Select(ur => ur.Role.Name).ToList()
                 }
             });
@@ -82,7 +81,8 @@ namespace ReactApp1.Server.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
-                new Claim("HisCodeAcc", user.HisCodeAcc)
+                new Claim("HisCodeAcc", user.HisCodeAcc),
+                new Claim("UserName", user.UserName) // new Claim(ClaimTypes.Role, user.UserRoles)
             };
 
             // VÒNG LẶP QUAN TRỌNG: User có bao nhiêu quyền thì add bấy nhiêu dòng vào Token
@@ -120,15 +120,15 @@ namespace ReactApp1.Server.Controllers
             var adminUser = new User
             {
                 FullName = "Quản Trị Viên Hệ Thống",
-                HisCodeAcc = "ADMIN001", // Dùng làm username đăng nhập
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"), // Pass mặc định
+                HisCodeAcc = "ADMIN001", 
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
                 PhoneNumber = "0999999999",
                 Department = "Phòng CNTT",
                 JobTitle = "IT Manager"
             };
 
             _context.Users.Add(adminUser);
-            await _context.SaveChangesAsync(); // Lưu để lấy ID của User
+            await _context.SaveChangesAsync(); 
 
             // 2. Lấy Role Admin (Giả sử ID = 1 là Admin do Seed Data tạo)
             var adminRole = await _context.Roles.FirstOrDefaultAsync(r => r.Code == "Admin");

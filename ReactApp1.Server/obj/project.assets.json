@@ -2973,9 +2973,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Administrator\\source\\repos\\ReactApp1\\ReactApp1.Server\\ReactApp1.Server.csproj",
-      "projectName": "ReactApp1.Server",
-      "projectPath": "C:\\Users\\Administrator\\source\\repos\\ReactApp1\\ReactApp1.Server\\ReactApp1.Server.csproj",
+      "projectUniqueName": "C:\\Users\\Administrator\\source\\repos\\ReactApp1\\ReactApp1.Server\\QLTB.Server.csproj",
+      "projectName": "QLTB.Server",
+      "projectPath": "C:\\Users\\Administrator\\source\\repos\\ReactApp1\\ReactApp1.Server\\QLTB.Server.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Administrator\\source\\repos\\ReactApp1\\ReactApp1.Server\\obj\\",
       "projectStyle": "PackageReference",

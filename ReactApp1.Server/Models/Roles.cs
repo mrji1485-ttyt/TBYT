@@ -16,7 +16,7 @@ namespace ReactApp1.Server.Models
 
         [Required]
         [MaxLength(50)]
-        public string Code { get; set; } // Mã code (VD: ADMIN) - Dùng để lập trình
+        public string Code { get; set; } // Mã code (VD: ADMIN)
 
         [MaxLength(200)]
         public string Description { get; set; }
