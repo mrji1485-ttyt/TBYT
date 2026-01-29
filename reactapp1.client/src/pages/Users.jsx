@@ -2,16 +2,18 @@
 import { Button, Table, Space, Modal, Form, Input, Select, Tag, Popconfirm, message, Switch } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { API_ROOT } from '../config'; 
 
 // Định nghĩa URL API gốc (Bạn sửa lại nếu backend khác)
-const API_URL = '/api/users';
-
+const API_USERS = '${API_ROOT}/api/users';
+const API_DEPARTMENTS = '${API_ROOT}/api/departments';
 const Users = () => {
     // 1. Khởi tạo State
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
+    const [departments, setDepartments] = useState([]);
 
     const [form] = Form.useForm();
     const navigate = useNavigate();
@@ -40,7 +42,7 @@ const Users = () => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetch(API_USERS, {
                 method: 'GET',
                 headers: getHeaders(),
             });
@@ -61,8 +63,24 @@ const Users = () => {
         }
     };
 
+    const fetchDepartments = async () => {
+        try {
+            const response = await fetch(API_DEPARTMENTS, {
+                method: 'GET',
+                headers: getHeaders(),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setDepartments(data);
+            }
+        } catch (error) {
+            console.error("Lỗi tải danh sách khoa:", error);
+        }
+    };
+
     // Chạy khi load trang
     useEffect(() => {
+        fetchDepartments();
         fetchUsers();
     }, []);
 
@@ -86,7 +104,7 @@ const Users = () => {
     // Xử lý Xóa (DELETE)
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
+            const response = await fetch(`${API_USERS}/${id}`, {
                 method: 'DELETE',
                 headers: getHeaders(),
             });
@@ -111,7 +129,7 @@ const Users = () => {
         try {
             // Giả sử Backend có API update riêng hoặc dùng API update chung
             // Ở đây dùng API update user chung, chỉ gửi field cần sửa
-            const response = await fetch(`${API_URL}/${record.id}`, {
+            const response = await fetch(`${API_USERS}/${record.id}`, {
                 method: 'PUT',
                 headers: getHeaders(),
                 body: JSON.stringify({ ...record, isActive: newStatus })
@@ -135,7 +153,7 @@ const Users = () => {
         setLoading(true);
         try {
             const method = editingUser ? 'PUT' : 'POST';
-            const url = editingUser ? `${API_URL}/${editingUser.id}` : API_URL;
+            const url = editingUser ? `${API_USERS}/${editingUser.id}` : API_USERS;
 
             // Nếu đang sửa mà không nhập password -> Xóa field password đi để Backend không update đè
             if (editingUser && !values.password) {
@@ -182,9 +200,20 @@ const Users = () => {
         },
         {
             title: 'Khoa phòng',
-            dataIndex: 'department',
+            dataIndex: 'departmentID',
             key: 'department',
-            render: (text) => <Tag color="blue">{text}</Tag>
+            render: (deptId) => {
+                // 👇 Logic: Dùng ID tìm trong mảng departments để lấy tên hiển thị
+                const dept = departments.find(d => d.id === deptId);
+                return <Tag color="blue">{dept ? dept.fullName : 'Chưa phân khoa'}</Tag>;
+            }// Sau này bổ xung IsActive thì uncomment đoạn dưới
+            // {
+            //     title: 'Trạng thái',
+            //     dataIndex: 'isActive',
+            //     render: (active, record) => (
+            //         <Switch checked={active} onChange={() => handleToggleStatus(record)} />
+            //     )
+            // },
         },
         {
             title: 'Trạng thái',
@@ -231,15 +260,11 @@ const Users = () => {
     // 5. Giao diện (Render)
     return (
         <div>
-            {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-                <h2>Danh sách Người dùng</h2>
-                <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-                    Thêm người dùng
-                </Button>
+                <h2>Quản lý Người dùng</h2>
+                <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>Thêm mới</Button>
             </div>
 
-            {/* Bảng dữ liệu */}
             <Table
                 columns={columns}
                 dataSource={users}
@@ -248,68 +273,71 @@ const Users = () => {
                 pagination={{ pageSize: 10 }}
             />
 
-            {/* Modal Form */}
             <Modal
-                title={editingUser ? "Chỉnh sửa thông tin" : "Thêm người dùng mới"}
+                title={editingUser ? "Sửa thông tin" : "Thêm người dùng"}
                 open={isModalOpen}
                 onCancel={() => setIsModalOpen(false)}
                 footer={null}
             >
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={onFinish}
-                >
-                    <Form.Item
-                        name="fullName"
-                        label="Họ và tên"
-                        rules={[{ required: true, message: 'Vui lòng nhập họ tên!' }]}
-                    >
-                        <Input placeholder="Ví dụ: Nguyễn Văn A" prefix={<UserOutlined />} />
+                <Form form={form} layout="vertical" onFinish={onFinish}>
+                    <Form.Item name="fullName" label="Họ và tên" rules={[{ required: true }]}>
+                        <Input prefix={<UserOutlined />} placeholder="Nguyễn Văn A" />
+                    </Form.Item>
+
+                    <Form.Item name="username" label="Tên đăng nhập" rules={[{ required: true }]}>
+                        <Input disabled={!!editingUser} />
                     </Form.Item>
 
                     <Form.Item
-                        name="userName"
-                        label="Tên đăng nhập"
-                        rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}
+                        name="passwordHash"
+                        label={editingUser ? "Mật khẩu mới (Bỏ qua nếu không đổi)" : "Mật khẩu"}
+                        rules={editingUser ? [] : [{ required: true, message: 'Nhập mật khẩu!' }]}
                     >
-                        <Input placeholder="Ví dụ: admin001" disabled={!!editingUser} />
+                        <Input.Password placeholder="******" />
                     </Form.Item>
 
-                    {/* Logic hiển thị mật khẩu: 
-                        - Khi thêm mới: Bắt buộc nhập.
-                        - Khi sửa: Không bắt buộc (nhập thì đổi, không nhập thì thôi). 
-                    */}
-                    <Form.Item
-                        name="password"
-                        label={editingUser ? "Mật khẩu mới (Để trống nếu không đổi)" : "Mật khẩu"}
-                        rules={editingUser ? [] : [{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-                    >
-                        <Input.Password placeholder="Nhập mật khẩu..." />
-                    </Form.Item>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                        <Form.Item name="phoneNumber" label="Số điện thoại" style={{ flex: 1 }}>
+                            <Input prefix={<PhoneOutlined />} />
+                        </Form.Item>
+                        <Form.Item name="hisCodeAcc" label="Mã HIS" style={{ flex: 1 }}>
+                            <Input prefix={<QrcodeOutlined />} />
+                        </Form.Item>
+                    </div>
 
-                    <Form.Item
-                        name="department"
-                        label="Khoa phòng / Bộ phận"
-                        rules={[{ required: true, message: 'Vui lòng chọn khoa phòng!' }]}
-                    >
-                        <Select placeholder="Chọn khoa phòng">
-                            <Select.Option value="IT">Phòng IT</Select.Option>
-                            <Select.Option value="Ban Giam Doc">Ban Giám Đốc</Select.Option>
-                            <Select.Option value="Khoa Noi">Khoa Nội</Select.Option>
-                            <Select.Option value="Khoa Ngoai">Khoa Ngoại</Select.Option>
-                            <Select.Option value="Chan Doan Hinh Anh">Chẩn đoán hình ảnh</Select.Option>
-                        </Select>
-                    </Form.Item>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                        <Form.Item name="jobTitle" label="Chức danh" style={{ flex: 1 }}>
+                            <Input prefix={<SolutionOutlined />} />
+                        </Form.Item>
 
-                    <Form.Item style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 0 }}>
-                        <Space>
-                            <Button onClick={() => setIsModalOpen(false)}>Hủy</Button>
-                            <Button type="primary" htmlType="submit" loading={loading}>
-                                {editingUser ? "Cập nhật" : "Thêm mới"}
-                            </Button>
-                        </Space>
-                    </Form.Item>
+                        {/* 👇 DROP DOWN CHỌN KHOA PHÒNG */}
+                        <Form.Item
+                            name="departmentID"
+                            label="Khoa phòng"
+                            style={{ flex: 1 }}
+                            rules={[{ required: true, message: 'Vui lòng chọn khoa!' }]}
+                        >
+                            <Select
+                                placeholder="-- Chọn khoa --"
+                                loading={departments.length === 0} // Hiệu ứng xoay khi chưa tải xong data
+                                showSearch // Cho phép gõ tìm kiếm
+                                optionFilterProp="children" // Tìm kiếm theo tên hiển thị
+                            >
+                                {departments.map(dept => (
+                                    <Select.Option key={dept.id} value={dept.id}>
+                                        {dept.fullName}
+                                    </Select.Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                    </div>
+
+                    <div style={{ textAlign: 'right' }}>
+                        <Button onClick={() => setIsModalOpen(false)} style={{ marginRight: 8 }}>Hủy</Button>
+                        <Button type="primary" htmlType="submit" loading={loading}>
+                            {editingUser ? "Cập nhật" : "Lưu lại"}
+                        </Button>
+                    </div>
                 </Form>
             </Modal>
         </div>

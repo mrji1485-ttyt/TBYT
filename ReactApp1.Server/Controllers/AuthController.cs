@@ -123,7 +123,7 @@ namespace ReactApp1.Server.Controllers
                 HisCodeAcc = "ADMIN001", 
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
                 PhoneNumber = "0999999999",
-                Department = "Phòng CNTT",
+                DepartmentCode = "CNTT",
                 JobTitle = "IT Manager"
             };
 

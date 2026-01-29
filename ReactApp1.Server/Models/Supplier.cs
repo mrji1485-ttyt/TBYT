@@ -30,5 +30,7 @@ namespace ReactApp1.Server.Models
         public string Address { get; set; }
 
         public string Note { get; set; } // Ghi chú năng lực nhà thầu
+        public int? CreatedByUserId { get; set; } // UserID người tạo
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Ngày tạo
     }
 }

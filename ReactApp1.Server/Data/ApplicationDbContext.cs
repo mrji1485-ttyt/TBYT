@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using QLTB.Server.Models;
 using ReactApp1.Server.Models;
 
 namespace ReactApp1.Server.Data
@@ -10,7 +11,9 @@ namespace ReactApp1.Server.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; } // Đừng quên dòng này
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<Departments> Departments { get; set; }
+        public DbSet<AuditLogs> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

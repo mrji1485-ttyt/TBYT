@@ -40,7 +40,7 @@ function App() {
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="suppliers" element={<Suppliers />} />
                     <Route path="users" element={<Users />} />
-                    <Route path="profiles" element={<Profile />} />
+                    <Route path="profiles" element={<Profiles />} />
                 </Route>
 
                 {/* 3. Bắt các đường dẫn lạ -> Chuyển về Login */}

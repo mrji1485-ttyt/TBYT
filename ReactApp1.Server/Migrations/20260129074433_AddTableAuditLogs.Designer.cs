@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ReactApp1.Server.Data;
@@ -11,9 +12,11 @@ using ReactApp1.Server.Data;
 namespace ReactApp1.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260129074433_AddTableAuditLogs")]
+    partial class AddTableAuditLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,7 +153,7 @@ namespace ReactApp1.Server.Migrations
                         {
                             Id = 1,
                             Code = "ADMIN",
-                            CreatedAt = new DateTime(2026, 1, 29, 8, 19, 22, 234, DateTimeKind.Utc).AddTicks(4073),
+                            CreatedAt = new DateTime(2026, 1, 29, 7, 44, 32, 517, DateTimeKind.Utc).AddTicks(4325),
                             Description = "Toàn quyền quản lý hệ thống",
                             IsActive = true,
                             Name = "Quản trị hệ thống"
@@ -159,7 +162,7 @@ namespace ReactApp1.Server.Migrations
                         {
                             Id = 2,
                             Code = "QLTB",
-                            CreatedAt = new DateTime(2026, 1, 29, 8, 19, 22, 234, DateTimeKind.Utc).AddTicks(4080),
+                            CreatedAt = new DateTime(2026, 1, 29, 7, 44, 32, 517, DateTimeKind.Utc).AddTicks(4332),
                             Description = "Quản lý hồ sơ thiết bị, cập nhật bảo dưỡng",
                             IsActive = true,
                             Name = "Quản lý thiết bị"
@@ -168,7 +171,7 @@ namespace ReactApp1.Server.Migrations
                         {
                             Id = 3,
                             Code = "TK",
-                            CreatedAt = new DateTime(2026, 1, 29, 8, 19, 22, 234, DateTimeKind.Utc).AddTicks(4081),
+                            CreatedAt = new DateTime(2026, 1, 29, 7, 44, 32, 517, DateTimeKind.Utc).AddTicks(4339),
                             Description = "Duyệt yêu cầu báo hỏng, đề xuất thanh lý",
                             IsActive = true,
                             Name = "Trưởng khoa"
@@ -177,7 +180,7 @@ namespace ReactApp1.Server.Migrations
                         {
                             Id = 4,
                             Code = "NV",
-                            CreatedAt = new DateTime(2026, 1, 29, 8, 19, 22, 234, DateTimeKind.Utc).AddTicks(4083),
+                            CreatedAt = new DateTime(2026, 1, 29, 7, 44, 32, 517, DateTimeKind.Utc).AddTicks(4340),
                             Description = "Sử dụng thiết bị, báo hỏng",
                             IsActive = true,
                             Name = "Nhân viên y tế"
@@ -254,9 +257,6 @@ namespace ReactApp1.Server.Migrations
                     b.Property<string>("DepartmentCode")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("DepartmentID")
-                        .HasColumnType("integer");
 
                     b.Property<string>("FullName")
                         .IsRequired()

@@ -31,7 +31,7 @@ namespace QLTB.Server.Controllers
                     Id = u.Id,
                     FullName = u.FullName,
                     UserName = u.UserName,
-                    Department = u.Department,
+                    DepartmentCode = u.DepartmentCode,
                     JobTitle = u.JobTitle,
                     PhoneNumber = u.PhoneNumber,
                     HisCodeAcc = u.HisCodeAcc
@@ -83,7 +83,7 @@ namespace QLTB.Server.Controllers
             existingUser.FullName = user.FullName;
             existingUser.HisCodeAcc = user.HisCodeAcc;
             existingUser.PhoneNumber = user.PhoneNumber;
-            existingUser.Department = user.Department;
+            existingUser.DepartmentCode = user.DepartmentCode;
             existingUser.JobTitle = user.JobTitle;
             // Username thường không cho sửa, nếu muốn sửa thì uncomment dòng dưới
             // existingUser.Username = user.Username; 
@@ -164,7 +164,7 @@ namespace QLTB.Server.Controllers
                 Id = user.Id,
                 FullName = user.FullName,
                 UserName = user.UserName,
-                Department = user.Department,
+                DepartmentCode = user.DepartmentCode,
                 JobTitle = user.JobTitle,
                 PhoneNumber = user.PhoneNumber,
                 HisCodeAcc = user.HisCodeAcc
