@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Data;
 using ReactApp1.Server.Models;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -143,8 +144,7 @@ namespace QLTB.Server.Controllers
         public async Task<ActionResult<User>> GetMe()
         {
             // Lấy Username từ trong Token (ClaimTypes.Name hoặc sub)
-            var username = User.Identity?.Name;
-
+            var username = User.FindFirstValue("UserName");
             if (string.IsNullOrEmpty(username))
             {
                 return Unauthorized(new { message = "Không tìm thấy thông tin định danh trong Token" });

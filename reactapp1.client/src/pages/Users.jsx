@@ -1,12 +1,10 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Button, Table, Space, Modal, Form, Input, Select, Tag, Popconfirm, message, Switch } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, UserOutlined, LockOutlined, UnlockOutlined, SolutionOutlined, QrcodeOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { API_ROOT } from '../config'; 
-
-// Định nghĩa URL API gốc (Bạn sửa lại nếu backend khác)
-const API_USERS = '${API_ROOT}/api/users';
-const API_DEPARTMENTS = '${API_ROOT}/api/departments';
+const API_USERS = `${API_ROOT}/api/Users`;
+const API_DEPARTMENTS = `${API_ROOT}/api/Departments`;
 const Users = () => {
     // 1. Khởi tạo State
     const [users, setUsers] = useState([]);
@@ -20,7 +18,7 @@ const Users = () => {
 
     // Hàm lấy Header có chứa Token
     const getHeaders = () => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('accessToken');
         return {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -31,7 +29,7 @@ const Users = () => {
     const checkAuth = (response) => {
         if (response.status === 401) {
             message.error('Phiên đăng nhập hết hạn!');
-            localStorage.removeItem('token');
+            localStorage.removeItem('accessToken');
             navigate('/login');
             return false;
         }
@@ -300,7 +298,7 @@ const Users = () => {
                         <Form.Item name="phoneNumber" label="Số điện thoại" style={{ flex: 1 }}>
                             <Input prefix={<PhoneOutlined />} />
                         </Form.Item>
-                        <Form.Item name="hisCodeAcc" label="Mã HIS" style={{ flex: 1 }}>
+                        <Form.Item name="hisCodeAcc" label="Mã Account HIS" style={{ flex: 1 }}>
                             <Input prefix={<QrcodeOutlined />} />
                         </Form.Item>
                     </div>

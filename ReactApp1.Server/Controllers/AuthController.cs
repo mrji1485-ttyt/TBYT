@@ -39,7 +39,7 @@ namespace ReactApp1.Server.Controllers
             var user = await _context.Users
                 .Include(u => u.UserRoles)      // Kèm bảng trung gian
                 .ThenInclude(ur => ur.Role)     // Kèm bảng Role để lấy tên quyền (Admin, TruongKhoa...)
-                .FirstOrDefaultAsync(u => u.HisCodeAcc == request.Username);
+                .FirstOrDefaultAsync(u => u.UserName == request.Username);
 
             // Kiểm tra:
             // Lưu ý: Dùng BCrypt để verify mật khẩu đã mã hóa
@@ -61,6 +61,7 @@ namespace ReactApp1.Server.Controllers
                     id = user.Id,
                     fullName = user.FullName,
                     hisCode = user.HisCodeAcc,
+                    userName = user.UserName,
                     roles = user.UserRoles.Select(ur => ur.Role.Name).ToList()
                 }
             });
@@ -82,10 +83,10 @@ namespace ReactApp1.Server.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FullName),
                 new Claim("HisCodeAcc", user.HisCodeAcc),
-                new Claim("UserName", user.UserName) // new Claim(ClaimTypes.Role, user.UserRoles)
+                new Claim("UserName", user.UserName)
             };
 
-            // VÒNG LẶP QUAN TRỌNG: User có bao nhiêu quyền thì add bấy nhiêu dòng vào Token
+            // ROLES: User có bao nhiêu quyền thì add bấy nhiêu dòng vào Token
             foreach (var userRole in user.UserRoles)
             {
                 // Kiểm tra null để tránh lỗi nếu dữ liệu Role bị thiếu
@@ -122,7 +123,7 @@ namespace ReactApp1.Server.Controllers
                 FullName = "Quản Trị Viên Hệ Thống",
                 HisCodeAcc = "ADMIN001", 
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456"),
-                PhoneNumber = "0999999999",
+                PhoneNumber = "0912334334",
                 DepartmentCode = "CNTT",
                 JobTitle = "IT Manager"
             };

@@ -73,7 +73,7 @@ function Login() {
                 >
                     <Form.Item
                         name="username"
-                        rules={[{ required: true, message: 'Vui lòng nhập Mã HIS!' }]}
+                        rules={[{ required: true, message: 'Vui lòng nhập tên tài khoản!' }]}
                     >
                         <Input prefix={<UserOutlined />} placeholder="Mã HIS (VD: ADMIN001)" size="large" />
                     </Form.Item>

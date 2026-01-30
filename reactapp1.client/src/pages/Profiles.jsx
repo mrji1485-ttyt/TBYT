@@ -1,8 +1,8 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Card, Button, Form, Input, Row, Col, Avatar, Tabs, message, Tag } from 'antd';
 import { UserOutlined, PhoneOutlined, SolutionOutlined, IdcardOutlined, LockOutlined, SaveOutlined } from '@ant-design/icons';
-
-const API_URL = '/api/Users';
+import { API_ROOT } from '../config';
+const API_USERS = `${API_ROOT}/api/Users`;
 
 const Profile = () => {
     const [loading, setLoading] = useState(false);
@@ -11,31 +11,37 @@ const Profile = () => {
     const [passwordForm] = Form.useForm();
 
     // Hàm lấy Header chứa Token
-    const getHeaders = () => ({
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-    });
+    const getHeaders = () => {
+        const token = localStorage.getItem('accessToken');
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+    };
 
     // 1. Lấy thông tin user hiện tại
     const fetchProfile = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${API_URL}/me`, { headers: getHeaders() });
+            const res = await fetch(`${API_USERS}/me`, {
+                method: 'GET',
+                headers: getHeaders(),
+            });
             if (res.ok) {
                 const data = await res.json();
                 setUser(data);
                 form.setFieldsValue({
-                    fullName: data.fullName,
-                    username: data.username,
-                    phoneNumber: data.phoneNumber,
-                    jobTitle: data.jobTitle,
-                    hisCodeAcc: data.hisCodeAcc
+                    FullName: data.fullName || data.FullName,
+                    UserName: data.userName || data.UserName,
+                    PhoneNumber: data.phoneNumber || data.PhoneNumber,
+                    JobTitle: data.jobTitle || data.JobTitle,
+                    HisCodeAcc: data.hisCodeAcc || data.HisCodeAcc
                 });
             } else {
                 message.error('Không thể tải thông tin hồ sơ');
             }
         } catch (error) {
-            message.error('Lỗi kết nối!');
+            error.message('Lỗi kết nối!');
         } finally {
             setLoading(false);
         }
@@ -50,10 +56,10 @@ const Profile = () => {
         setLoading(true);
         try {
             // Gọi API Update (dùng ID của user đã lấy được)
-            const res = await fetch(`${API_URL}/${user.id}`, {
+            const res = await fetch(`${API_USERS}/${user.id}`, {
                 method: 'PUT',
                 headers: getHeaders(),
-                body: JSON.stringify({ ...user, ...values }) // Giữ nguyên các trường cũ, chỉ thay đổi trường form nhập
+                body: JSON.stringify({ ...user, ...values })
             });
 
             if (res.ok) {
@@ -69,10 +75,9 @@ const Profile = () => {
         }
     };
 
-    // 3. Đổi mật khẩu (Logic giả lập, bạn cần API đổi pass riêng ở Backend)
+    // 3. Đổi mật khẩu
     const handleChangePassword = async (values) => {
-        // Backend cần xử lý việc check mật khẩu cũ và hash mật khẩu mới
-        message.info('Chức năng này cần Backend hỗ trợ API đổi mật khẩu riêng!');
+        message.info(values+'Chức năng này cần Backend hỗ trợ API đổi mật khẩu riêng!');
     };
 
     // --- GIAO DIỆN ---
@@ -84,27 +89,27 @@ const Profile = () => {
                 <Form layout="vertical" form={form} onFinish={handleUpdateInfo}>
                     <Row gutter={16}>
                         <Col span={12}>
-                            <Form.Item label="Họ và tên" name="fullName" rules={[{ required: true, message: 'Vui lòng nhập họ tên' }]}>
+                            <Form.Item label="Họ và tên" name="FullName" rules={[{ required: true, message: 'Vui lòng nhập họ tên' }]}>
                                 <Input prefix={<UserOutlined />} />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Số điện thoại" name="phoneNumber">
+                            <Form.Item label="Số điện thoại" name="PhoneNumber">
                                 <Input prefix={<PhoneOutlined />} />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Chức danh" name="jobTitle">
+                            <Form.Item label="Chức danh" name="JobTitle">
                                 <Input prefix={<SolutionOutlined />} />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Mã liên kết HIS" name="hisCodeAcc">
+                            <Form.Item label="Mã liên kết HIS" name="HisCodeAcc">
                                 <Input prefix={<IdcardOutlined />} />
                             </Form.Item>
                         </Col>
                         <Col span={24}>
-                            <Form.Item label="Tên đăng nhập (Không thể sửa)" name="username">
+                            <Form.Item label="Tên đăng nhập (Không thể sửa)" name="UserName">
                                 <Input disabled />
                             </Form.Item>
                         </Col>
